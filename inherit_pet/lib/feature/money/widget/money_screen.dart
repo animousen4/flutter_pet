@@ -3,8 +3,8 @@ import 'package:flutter/widgets.dart';
 import 'package:inherit_pet/feature/money/model/change.dart';
 import 'package:inherit_pet/feature/money/widget/money_scope.dart';
 
-class MyWidget extends StatelessWidget {
-  const MyWidget({super.key});
+class TransactionsPage extends StatelessWidget {
+  const TransactionsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
