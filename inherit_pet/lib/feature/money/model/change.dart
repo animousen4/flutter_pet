@@ -3,6 +3,7 @@ enum Reason {
 
   product,
 
+  salary,
 }
 
 enum ChangeType {
@@ -11,8 +12,7 @@ enum ChangeType {
   income
 }
 
-class Change {
-
+class MoneyChange {
   final ChangeType changeType;
 
   final String? note;
@@ -21,5 +21,9 @@ class Change {
 
   final int money;
 
-  Change({required this.changeType, required this.note, required this.reason, required this.money});
+  MoneyChange(
+      {required this.changeType,
+      this.note,
+      required this.reason,
+      required this.money});
 }

@@ -16,20 +16,20 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$MoneyEvent {
-  Change<dynamic> get change => throw _privateConstructorUsedError;
+  MoneyChange get change => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(Change<dynamic> change) modifyMoney,
+    required TResult Function(MoneyChange change) modifyMoney,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(Change<dynamic> change)? modifyMoney,
+    TResult? Function(MoneyChange change)? modifyMoney,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(Change<dynamic> change)? modifyMoney,
+    TResult Function(MoneyChange change)? modifyMoney,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -61,7 +61,7 @@ abstract class $MoneyEventCopyWith<$Res> {
           MoneyEvent value, $Res Function(MoneyEvent) then) =
       _$MoneyEventCopyWithImpl<$Res, MoneyEvent>;
   @useResult
-  $Res call({Change<dynamic> change});
+  $Res call({MoneyChange change});
 }
 
 /// @nodoc
@@ -83,7 +83,7 @@ class _$MoneyEventCopyWithImpl<$Res, $Val extends MoneyEvent>
       change: null == change
           ? _value.change
           : change // ignore: cast_nullable_to_non_nullable
-              as Change<dynamic>,
+              as MoneyChange,
     ) as $Val);
   }
 }
@@ -96,7 +96,7 @@ abstract class _$$ModifyMoneyImplCopyWith<$Res>
       __$$ModifyMoneyImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({Change<dynamic> change});
+  $Res call({MoneyChange change});
 }
 
 /// @nodoc
@@ -116,7 +116,7 @@ class __$$ModifyMoneyImplCopyWithImpl<$Res>
       change: null == change
           ? _value.change
           : change // ignore: cast_nullable_to_non_nullable
-              as Change<dynamic>,
+              as MoneyChange,
     ));
   }
 }
@@ -127,7 +127,7 @@ class _$ModifyMoneyImpl implements _ModifyMoney {
   const _$ModifyMoneyImpl({required this.change});
 
   @override
-  final Change<dynamic> change;
+  final MoneyChange change;
 
   @override
   String toString() {
@@ -154,7 +154,7 @@ class _$ModifyMoneyImpl implements _ModifyMoney {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(Change<dynamic> change) modifyMoney,
+    required TResult Function(MoneyChange change) modifyMoney,
   }) {
     return modifyMoney(change);
   }
@@ -162,7 +162,7 @@ class _$ModifyMoneyImpl implements _ModifyMoney {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(Change<dynamic> change)? modifyMoney,
+    TResult? Function(MoneyChange change)? modifyMoney,
   }) {
     return modifyMoney?.call(change);
   }
@@ -170,7 +170,7 @@ class _$ModifyMoneyImpl implements _ModifyMoney {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(Change<dynamic> change)? modifyMoney,
+    TResult Function(MoneyChange change)? modifyMoney,
     required TResult orElse(),
   }) {
     if (modifyMoney != null) {
@@ -209,11 +209,11 @@ class _$ModifyMoneyImpl implements _ModifyMoney {
 }
 
 abstract class _ModifyMoney implements MoneyEvent {
-  const factory _ModifyMoney({required final Change<dynamic> change}) =
+  const factory _ModifyMoney({required final MoneyChange change}) =
       _$ModifyMoneyImpl;
 
   @override
-  Change<dynamic> get change;
+  MoneyChange get change;
   @override
   @JsonKey(ignore: true)
   _$$ModifyMoneyImplCopyWith<_$ModifyMoneyImpl> get copyWith =>
@@ -223,36 +223,43 @@ abstract class _ModifyMoney implements MoneyEvent {
 /// @nodoc
 mixin _$MoneyState {
   int get moneyLeft => throw _privateConstructorUsedError;
-  List<Change> get changes => throw _privateConstructorUsedError;
+  List<MoneyChange> get changes => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(int moneyLeft, List<Change> changes) idle,
+    required TResult Function(int moneyLeft, List<MoneyChange> changes) idle,
+    required TResult Function(int moneyLeft, List<MoneyChange> changes)
+        processing,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(int moneyLeft, List<Change> changes)? idle,
+    TResult? Function(int moneyLeft, List<MoneyChange> changes)? idle,
+    TResult? Function(int moneyLeft, List<MoneyChange> changes)? processing,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(int moneyLeft, List<Change> changes)? idle,
+    TResult Function(int moneyLeft, List<MoneyChange> changes)? idle,
+    TResult Function(int moneyLeft, List<MoneyChange> changes)? processing,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Idle value) idle,
+    required TResult Function(_Processing value) processing,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Idle value)? idle,
+    TResult? Function(_Processing value)? processing,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Idle value)? idle,
+    TResult Function(_Processing value)? processing,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -268,7 +275,7 @@ abstract class $MoneyStateCopyWith<$Res> {
           MoneyState value, $Res Function(MoneyState) then) =
       _$MoneyStateCopyWithImpl<$Res, MoneyState>;
   @useResult
-  $Res call({int moneyLeft, List<Change> changes});
+  $Res call({int moneyLeft, List<MoneyChange> changes});
 }
 
 /// @nodoc
@@ -295,7 +302,7 @@ class _$MoneyStateCopyWithImpl<$Res, $Val extends MoneyState>
       changes: null == changes
           ? _value.changes
           : changes // ignore: cast_nullable_to_non_nullable
-              as List<Change>,
+              as List<MoneyChange>,
     ) as $Val);
   }
 }
@@ -307,7 +314,7 @@ abstract class _$$IdleImplCopyWith<$Res> implements $MoneyStateCopyWith<$Res> {
       __$$IdleImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int moneyLeft, List<Change> changes});
+  $Res call({int moneyLeft, List<MoneyChange> changes});
 }
 
 /// @nodoc
@@ -331,7 +338,7 @@ class __$$IdleImplCopyWithImpl<$Res>
       changes: null == changes
           ? _value._changes
           : changes // ignore: cast_nullable_to_non_nullable
-              as List<Change>,
+              as List<MoneyChange>,
     ));
   }
 }
@@ -340,14 +347,14 @@ class __$$IdleImplCopyWithImpl<$Res>
 
 class _$IdleImpl implements _Idle {
   const _$IdleImpl(
-      {required this.moneyLeft, required final List<Change> changes})
+      {required this.moneyLeft, required final List<MoneyChange> changes})
       : _changes = changes;
 
   @override
   final int moneyLeft;
-  final List<Change> _changes;
+  final List<MoneyChange> _changes;
   @override
-  List<Change> get changes {
+  List<MoneyChange> get changes {
     if (_changes is EqualUnmodifiableListView) return _changes;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_changes);
@@ -381,7 +388,9 @@ class _$IdleImpl implements _Idle {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(int moneyLeft, List<Change> changes) idle,
+    required TResult Function(int moneyLeft, List<MoneyChange> changes) idle,
+    required TResult Function(int moneyLeft, List<MoneyChange> changes)
+        processing,
   }) {
     return idle(moneyLeft, changes);
   }
@@ -389,7 +398,8 @@ class _$IdleImpl implements _Idle {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(int moneyLeft, List<Change> changes)? idle,
+    TResult? Function(int moneyLeft, List<MoneyChange> changes)? idle,
+    TResult? Function(int moneyLeft, List<MoneyChange> changes)? processing,
   }) {
     return idle?.call(moneyLeft, changes);
   }
@@ -397,7 +407,8 @@ class _$IdleImpl implements _Idle {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(int moneyLeft, List<Change> changes)? idle,
+    TResult Function(int moneyLeft, List<MoneyChange> changes)? idle,
+    TResult Function(int moneyLeft, List<MoneyChange> changes)? processing,
     required TResult orElse(),
   }) {
     if (idle != null) {
@@ -410,6 +421,7 @@ class _$IdleImpl implements _Idle {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Idle value) idle,
+    required TResult Function(_Processing value) processing,
   }) {
     return idle(this);
   }
@@ -418,6 +430,7 @@ class _$IdleImpl implements _Idle {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Idle value)? idle,
+    TResult? Function(_Processing value)? processing,
   }) {
     return idle?.call(this);
   }
@@ -426,6 +439,7 @@ class _$IdleImpl implements _Idle {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Idle value)? idle,
+    TResult Function(_Processing value)? processing,
     required TResult orElse(),
   }) {
     if (idle != null) {
@@ -438,14 +452,173 @@ class _$IdleImpl implements _Idle {
 abstract class _Idle implements MoneyState {
   const factory _Idle(
       {required final int moneyLeft,
-      required final List<Change> changes}) = _$IdleImpl;
+      required final List<MoneyChange> changes}) = _$IdleImpl;
 
   @override
   int get moneyLeft;
   @override
-  List<Change> get changes;
+  List<MoneyChange> get changes;
   @override
   @JsonKey(ignore: true)
   _$$IdleImplCopyWith<_$IdleImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$ProcessingImplCopyWith<$Res>
+    implements $MoneyStateCopyWith<$Res> {
+  factory _$$ProcessingImplCopyWith(
+          _$ProcessingImpl value, $Res Function(_$ProcessingImpl) then) =
+      __$$ProcessingImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({int moneyLeft, List<MoneyChange> changes});
+}
+
+/// @nodoc
+class __$$ProcessingImplCopyWithImpl<$Res>
+    extends _$MoneyStateCopyWithImpl<$Res, _$ProcessingImpl>
+    implements _$$ProcessingImplCopyWith<$Res> {
+  __$$ProcessingImplCopyWithImpl(
+      _$ProcessingImpl _value, $Res Function(_$ProcessingImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? moneyLeft = null,
+    Object? changes = null,
+  }) {
+    return _then(_$ProcessingImpl(
+      moneyLeft: null == moneyLeft
+          ? _value.moneyLeft
+          : moneyLeft // ignore: cast_nullable_to_non_nullable
+              as int,
+      changes: null == changes
+          ? _value._changes
+          : changes // ignore: cast_nullable_to_non_nullable
+              as List<MoneyChange>,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$ProcessingImpl implements _Processing {
+  const _$ProcessingImpl(
+      {required this.moneyLeft, required final List<MoneyChange> changes})
+      : _changes = changes;
+
+  @override
+  final int moneyLeft;
+  final List<MoneyChange> _changes;
+  @override
+  List<MoneyChange> get changes {
+    if (_changes is EqualUnmodifiableListView) return _changes;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_changes);
+  }
+
+  @override
+  String toString() {
+    return 'MoneyState.processing(moneyLeft: $moneyLeft, changes: $changes)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$ProcessingImpl &&
+            (identical(other.moneyLeft, moneyLeft) ||
+                other.moneyLeft == moneyLeft) &&
+            const DeepCollectionEquality().equals(other._changes, _changes));
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      runtimeType, moneyLeft, const DeepCollectionEquality().hash(_changes));
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$ProcessingImplCopyWith<_$ProcessingImpl> get copyWith =>
+      __$$ProcessingImplCopyWithImpl<_$ProcessingImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(int moneyLeft, List<MoneyChange> changes) idle,
+    required TResult Function(int moneyLeft, List<MoneyChange> changes)
+        processing,
+  }) {
+    return processing(moneyLeft, changes);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(int moneyLeft, List<MoneyChange> changes)? idle,
+    TResult? Function(int moneyLeft, List<MoneyChange> changes)? processing,
+  }) {
+    return processing?.call(moneyLeft, changes);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(int moneyLeft, List<MoneyChange> changes)? idle,
+    TResult Function(int moneyLeft, List<MoneyChange> changes)? processing,
+    required TResult orElse(),
+  }) {
+    if (processing != null) {
+      return processing(moneyLeft, changes);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_Idle value) idle,
+    required TResult Function(_Processing value) processing,
+  }) {
+    return processing(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_Idle value)? idle,
+    TResult? Function(_Processing value)? processing,
+  }) {
+    return processing?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_Idle value)? idle,
+    TResult Function(_Processing value)? processing,
+    required TResult orElse(),
+  }) {
+    if (processing != null) {
+      return processing(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _Processing implements MoneyState {
+  const factory _Processing(
+      {required final int moneyLeft,
+      required final List<MoneyChange> changes}) = _$ProcessingImpl;
+
+  @override
+  int get moneyLeft;
+  @override
+  List<MoneyChange> get changes;
+  @override
+  @JsonKey(ignore: true)
+  _$$ProcessingImplCopyWith<_$ProcessingImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
