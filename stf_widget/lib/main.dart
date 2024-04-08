@@ -29,6 +29,9 @@ class RedBox extends StatefulWidget {
 
   @override
   State<RedBox> createState() => _RedBoxState();
+
+  static int valueOf(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<_RedBoxInh>()!.value;
 }
 
 class _RedBoxState extends State<RedBox> {
@@ -36,36 +39,42 @@ class _RedBoxState extends State<RedBox> {
 
   @override
   Widget build(BuildContext context) {
-    print ("Red build");
-    return Container(
-      color: Colors.red,
-      child: Column(
-        children: [
-          Expanded(
-            flex: 3,
-            child: Center(
-              child: ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      redCounter++;
-                    });
-                  },
-                  child: Text("$redCounter")),
-            ),
-          ),
-          const Expanded(
-            flex: 7,
-            child: Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  Expanded(child: GreenBox()),
-                  Expanded(child: BlueBox())
-                ],
+    print("Red build");
+    return _RedBoxInh(
+      value: redCounter,
+      child: Container(
+        color: Colors.red,
+        child: Column(
+          children: [
+            Expanded(
+              flex: 3,
+              child: Center(
+                child: ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        redCounter++;
+                      });
+                    },
+                    child: Text("$redCounter")),
               ),
             ),
-          ),
-        ],
+            Expanded(
+              flex: 7,
+              child: Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    const Expanded(child: GreenBox()),
+                    Expanded(
+                        child: redCounter % 2 == 0
+                            ? const BlueBox()
+                            : const PinkBox())
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -97,6 +106,17 @@ class _RedBoxState extends State<RedBox> {
   }
 }
 
+class _RedBoxInh extends InheritedWidget {
+  final int value;
+
+  const _RedBoxInh({required super.child, required this.value});
+
+  @override
+  bool updateShouldNotify(covariant _RedBoxInh oldWidget) {
+    return oldWidget.value != value;
+  }
+}
+
 class GreenBox extends StatefulWidget {
   const GreenBox({super.key});
 
@@ -106,21 +126,28 @@ class GreenBox extends StatefulWidget {
 
 class _GreenBoxState extends State<GreenBox> {
   int greenCounter = 0;
-
+  int redValue = 0;
   @override
   Widget build(BuildContext context) {
     print("Green build");
     return Container(
       constraints: const BoxConstraints.expand(),
       color: Colors.green,
-      child: Center(
-        child: ElevatedButton(
-            onPressed: () {
-              setState(() {
-                greenCounter++;
-              });
-            },
-            child: Text("$greenCounter")),
+      child: Column(
+        children: [
+          Expanded(child: Center(child: Text("$redValue"))),
+          Expanded(
+            child: Center(
+              child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      greenCounter++;
+                    });
+                  },
+                  child: Text("$greenCounter")),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -128,6 +155,9 @@ class _GreenBoxState extends State<GreenBox> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+
+    // subscribing on the inherited of RedBox
+    redValue = RedBox.valueOf(context);
 
     print("Green didChangeDependencies");
   }
@@ -204,6 +234,22 @@ class _BlueBoxState extends State<BlueBox> {
   void dispose() {
     print("Blue dispose");
     super.dispose();
+  }
+}
+
+class PinkBox extends StatefulWidget {
+  const PinkBox({super.key});
+
+  @override
+  State<PinkBox> createState() => _PinkBoxState();
+}
+
+class _PinkBoxState extends State<PinkBox> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.pink,
+    );
   }
 }
 
