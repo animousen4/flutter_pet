@@ -60,7 +60,7 @@ class _HomePageState extends State<HomePage> implements HomePageController {
             num: num,
             // if we don't have const here, the build will be called in SomeWidgetInTree
             // externally
-            child: const SomeWidgetInTree(),
+            child: StfWidget(num: num,),
           ),
           ElevatedButton(
               onPressed: () {
@@ -104,15 +104,56 @@ class _HomePageState extends State<HomePage> implements HomePageController {
   }
 }
 
-class SomeWidgetInTree extends StatelessWidget {
-  const SomeWidgetInTree({super.key});
+class StfWidget extends StatefulWidget {
+  const StfWidget({super.key, required this.num});
 
+  final int num;
+  @override
+  State<StfWidget> createState() => _StfWidgetState();
+}
+
+class _StfWidgetState extends State<StfWidget> {
+
+  var num = 0;
   @override
   Widget build(BuildContext context) {
     // subscribing to state of inherited
-    var num =
+    ;
+    print("_StfWidgetState build");
+    return Text("_StfWidgetState: $num");
+  }
+
+
+  @override
+  void initState() {
+    print("_StfWidgetState initState()");
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    print("_StfWidgetState didChangeDependencies()");
+
+    num =
         context.dependOnInheritedWidgetOfExactType<_HomePageInherit>()!.num;
-    print("SomeWidgetInTree build");
-    return Text("SomeWidgetInTree: $num");
+  }
+
+  @override
+  void didUpdateWidget(covariant StfWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    print("_StfWidgetState didUpdateWidget()");
+  }
+
+  @override
+  void deactivate() {
+    super.deactivate();
+    print("_StfWidgetState deactivate()");
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    print("_StfWidgetState dispose()");
   }
 }
