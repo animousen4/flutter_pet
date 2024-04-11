@@ -60,7 +60,7 @@ class _HomePageState extends State<HomePage> implements HomePageController {
             num: num,
             // if we don't have const here, the build will be called in SomeWidgetInTree
             // externally
-            child: StfWidget(num: num,),
+            child: const StfWidget(),
           ),
           ElevatedButton(
               onPressed: () {
@@ -105,9 +105,8 @@ class _HomePageState extends State<HomePage> implements HomePageController {
 }
 
 class StfWidget extends StatefulWidget {
-  const StfWidget({super.key, required this.num});
+  const StfWidget({super.key});
 
-  final int num;
   @override
   State<StfWidget> createState() => _StfWidgetState();
 }
