@@ -1,14 +1,90 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(const MaterialContext());
+}
+
+class MaterialContext extends StatelessWidget {
+  const MaterialContext({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MainAppScope(child: MaterialApp(home: HomeScreen()));
+  }
 }
 
 abstract interface class ElementsController {
+  void validate(String text);
   void addElement(String element);
-  void removeElement(int index);
+  String removeElement(int index);
+}
+
+class MainAppScope extends StatefulWidget {
+  const MainAppScope({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  State<MainAppScope> createState() => _MainAppScopeState();
+
+  static MainAppViewModelState? stateOf(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<_InheritMainApp>()?.state;
+
+  static ElementsController? controllerOf(BuildContext context,
+          {bool listen = true}) =>
+      listen
+          ? context
+              .dependOnInheritedWidgetOfExactType<_InheritMainApp>()
+              ?.elementsController
+          : context
+              .getInheritedWidgetOfExactType<_InheritMainApp>()
+              ?.elementsController;
+}
+
+class _MainAppScopeState extends State<MainAppScope>
+    implements ElementsController {
+  MainAppViewModelState state = MainAppViewModelState.empty([]);
+
+  @override
+  Widget build(BuildContext context) {
+    print("build _MainAppScopeState");
+    return _InheritMainApp(
+      state: state,
+      elementsController: this,
+      child: widget.child,
+    );
+  }
+
+  @override
+  void addElement(String element) {
+    setState(() {
+      if (state.isValid) {
+        state.elements.add(element);
+      }
+    });
+  }
+
+  @override
+  String removeElement(int index) {
+    setState(() {});
+    return state.elements.removeAt(index);
+  }
+
+  @override
+  void validate(String text) {
+    final errors = <ValidationError>[];
+
+    if (text.isEmpty) {
+      errors.add(ValidationError(error: "This field shouldn't be empty"));
+    }
+
+    state = state.copyWith(errors: errors);
+
+    setState(() {});
+  }
 }
 
 class _InheritMainApp extends InheritedWidget {
@@ -22,11 +98,9 @@ class _InheritMainApp extends InheritedWidget {
 
   @override
   bool updateShouldNotify(_InheritMainApp oldWidget) {
-    return state != oldWidget.state;
+    final shouldUpdate = state != oldWidget.state;
+    return shouldUpdate;
   }
-
-  static MainAppViewModelState? stateOf(BuildContext context) =>
-      context.dependOnInheritedWidgetOfExactType<_InheritMainApp>()?.state;
 }
 
 class ValidationError {
@@ -56,55 +130,41 @@ class MainAppViewModelState {
       errors: errors ?? this.errors,
     );
   }
-}
-
-class MainApp extends StatefulWidget {
-  const MainApp({super.key});
 
   @override
-  State<MainApp> createState() => _MainAppState();
+  bool operator ==(covariant MainAppViewModelState other) {
+    return listEquals(other.elements, elements) &&
+        listEquals(other.errors, errors);
+  }
+
+  @override
+  int get hashCode => elements.hashCode ^ errors.hashCode;
 }
 
-class _MainAppState extends State<MainApp> implements ElementsController {
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   late final TextEditingController inputController;
   late final GlobalKey<AnimatedListState> listKey;
-  late MainAppViewModelState mainAppState;
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: Column(
-          children: [
-            TextFormField(
-              controller: inputController,
-              decoration: InputDecoration(
-                  error: mainAppState.errors.isEmpty
-                      ? null
-                      : Text(mainAppState.errors.first.error)),
-            ),
-            Expanded(
-                child: AnimatedList(
-              key: listKey,
-              itemBuilder: (context, index, animation) => SizeTransition(
-                  sizeFactor: animation,
-                  child: InkWell(
-                      onTap: () => removeElement(index),
-                      child:
-                          ListElement(element: mainAppState.elements[index]))),
-              initialItemCount: mainAppState.elements.length,
-            )),
-          ],
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: mainAppState.isValid
-              ? () {
-                  addElement(inputController.text);
-                }
-              : null,
-          child: const Icon(Icons.add),
-        ),
+    print("build _HomeScreenState");
+
+    return Scaffold(
+      body: Column(
+        children: [
+          DataInputWidget(inputController: inputController),
+          Expanded(child: AnimListView(listKey: listKey)),
+        ],
       ),
+      floatingActionButton:
+          _FloatingButton(inputController: inputController, listKey: listKey),
     );
   }
 
@@ -116,61 +176,110 @@ class _MainAppState extends State<MainApp> implements ElementsController {
 
     inputController.addListener(_textChanged);
 
-    mainAppState = MainAppViewModelState.empty([]);
-
     listKey = GlobalKey<AnimatedListState>();
   }
 
   void _textChanged() {
-    setState(() {
-      final errors = _validateText(inputController.text);
-      mainAppState = mainAppState.copyWith(errors: errors);
-    });
-  }
-
-  List<ValidationError> _validateText(String text) {
-    final List<ValidationError> errors = [];
-
-    if (text.isEmpty) {
-      final error = ValidationError(error: "Field shouldn't be empty");
-      errors.add(error);
-    }
-
-    return errors;
-  }
-
-  @override
-  void addElement(String element) {
-    if (mainAppState.isValid) {
-      mainAppState.elements.add(element);
-      final index = mainAppState.elements.length - 1;
-      listKey.currentState
-          ?.insertItem(index, duration: const Duration(milliseconds: 60));
-    }
-  }
-
-  @override
-  void removeElement(int index) {
-    final element = mainAppState.elements.removeAt(index);
-
-    listKey.currentState?.removeItem(
-        index,
-        (context, animation) => AnimatedBuilder(
-              animation: animation,
-              builder: (context, child) => SizeTransition(
-                  sizeFactor: animation,
-                  child: FadeTransition(opacity: animation, child: child)),
-              child: ListElement(
-                element: element,
-              ),
-            ),
-        duration: const Duration(milliseconds: 60));
+    MainAppScope.controllerOf(context, listen: false)
+        ?.validate(inputController.text);
   }
 
   @override
   void dispose() {
     inputController.removeListener(_textChanged);
+    inputController.dispose();
     super.dispose();
+  }
+}
+
+class _FloatingButton extends StatelessWidget {
+  const _FloatingButton({
+    super.key,
+    required this.inputController,
+    required this.listKey,
+  });
+
+  final TextEditingController inputController;
+  final GlobalKey<AnimatedListState> listKey;
+
+  @override
+  Widget build(BuildContext context) {
+    final elementsController = MainAppScope.controllerOf(context)!;
+    final MainAppViewModelState state = MainAppScope.stateOf(context)!;
+
+    return FloatingActionButton(
+      onPressed: state.isValid
+          ? () {
+              elementsController.addElement(inputController.text);
+              listKey.currentState?.insertItem(state.elements.length - 1);
+              inputController.clear();
+            }
+          : null,
+      child: const Icon(Icons.add),
+    );
+  }
+}
+
+class AnimListView extends StatelessWidget {
+  const AnimListView({
+    super.key,
+    required this.listKey,
+  });
+
+  final GlobalKey<AnimatedListState> listKey;
+
+  @override
+  Widget build(BuildContext context) {
+    final elementsController = MainAppScope.controllerOf(context)!;
+    final state = MainAppScope.stateOf(context)!;
+    return AnimatedList(
+      key: listKey,
+      itemBuilder: (context, index, animation) => SizeTransition(
+          sizeFactor: animation,
+          child: InkWell(
+              onTap: () {
+                final element = elementsController.removeElement(index);
+                listKey.currentState?.removeItem(
+                    index,
+                    (context, animation) => AnimatedBuilder(
+                          animation: animation,
+                          builder: (context, child) => SizeTransition(
+                            sizeFactor: animation,
+                            child: SlideTransition(
+                              position: animation.drive(Tween(
+                                  begin: const Offset(1.0, 0.0),
+                                  end: const Offset(0.0, 0.0))),
+                              child: FadeTransition(
+                                  opacity: animation, child: child),
+                            ),
+                          ),
+                          child: ListElement(element: element),
+                        ));
+              },
+              child: ListElement(element: state.elements[index]))),
+      initialItemCount: state.elements.length,
+    );
+  }
+}
+
+class DataInputWidget extends StatelessWidget {
+  const DataInputWidget({
+    super.key,
+    required this.inputController,
+  });
+
+  final TextEditingController inputController;
+
+  @override
+  Widget build(BuildContext context) {
+    final mainAppState = MainAppScope.stateOf(context)!;
+    return TextFormField(
+      controller: inputController,
+      decoration: InputDecoration(
+          error: mainAppState.errors.isEmpty
+              ? null
+              : Text(mainAppState.errors.first.error)),
+    );
   }
 }
 
