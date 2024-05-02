@@ -125,7 +125,7 @@ class DataInputWidget extends StatelessWidget {
       controller: inputController,
       decoration: InputDecoration(
           error: mainAppState.errors.isEmpty
-              ? SizedBox()
+              ? null
               : Text(mainAppState.errors.first.error)),
     );
   }
