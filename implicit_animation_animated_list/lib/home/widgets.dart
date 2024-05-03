@@ -116,7 +116,7 @@ class DataInputWidget extends StatelessWidget {
     required this.inputController,
   });
 
-  final TextEditingController inputController;
+  final TextEditingController inputController;  
 
   @override
   Widget build(BuildContext context) {
