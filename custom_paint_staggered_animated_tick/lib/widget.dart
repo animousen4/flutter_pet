@@ -36,25 +36,30 @@ class CustomTickPainter extends CustomPainter {
   late final Animation<double> greenSecondFinalTickAnimation;
 
   CustomTickPainter({super.repaint, required this.animationController}) {
-    introArcAnimation = mapInervalToAnimation(0.10, 0.40);
-    greenFirstArcAnimation = mapInervalToAnimation(0.2, 0.6);
-    greenSecondArcAnimation = mapInervalToAnimation(0.3, 0.6);
+    introArcAnimation =
+        mapInervalToAnimation(0.10, 0.95, curve: Curves.easeInOutCirc);
+    greenFirstArcAnimation =
+        mapInervalToAnimation(0.2, 1, curve: Curves.easeInOutCirc);
+    greenSecondArcAnimation =
+        mapInervalToAnimation(0.45, 1, curve: Curves.easeInOutCirc);
 
     /////////////////////////////////
 
     greyFirstTickAnimation = mapInervalToAnimation(0.25, 0.4);
-    greySecondTickAnimation = mapInervalToAnimation(0.4, 0.55);
+    greySecondTickAnimation = mapInervalToAnimation(0.4, 0.6);
 
-    greenFirstTickAnimation = mapInervalToAnimation(0.35, 0.45);
-    greenSecondTickAnimation = mapInervalToAnimation(0.45, 0.6);
+    greenFirstTickAnimation = mapInervalToAnimation(0.55, 0.60);
+    greenSecondTickAnimation = mapInervalToAnimation(0.60, 0.8);
 
-    greenFirstFinalTickAnimation = mapInervalToAnimation(0.50, 0.55);
-    greenSecondFinalTickAnimation = mapInervalToAnimation(0.55, 0.6);
+    greenFirstFinalTickAnimation = mapInervalToAnimation(0.60, 0.70);
+    greenSecondFinalTickAnimation = mapInervalToAnimation(0.70, 1);
   }
 
-  Animation<double> mapInervalToAnimation(double begin, double end) =>
+  Animation<double> mapInervalToAnimation(double begin, double end,
+          {Curve curve = Curves.decelerate}) =>
       Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-          parent: animationController, curve: Interval(begin, end)));
+          parent: animationController,
+          curve: Interval(begin, end, curve: curve)));
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -68,9 +73,9 @@ class CustomTickPainter extends CustomPainter {
         ..strokeWidth = strokeWidth;
     }
 
-    final startColor = Colors.grey.shade500;
-    final firstColor = Colors.green.shade500;
-    final secondaryColor = Colors.green.shade600;
+    final startColor = Color.fromRGBO(242, 242, 247, 1);
+    final firstColor = Color.fromRGBO(78, 162, 23, 1);
+    final secondaryColor = Color.fromRGBO(53, 152, 70, 1);
 
     final centerX = size.width / 2;
     final centerY = size.height / 2;
@@ -84,33 +89,22 @@ class CustomTickPainter extends CustomPainter {
     _drawSecondArc(
         getBasePaint, firstColor, strokeWidth, secondExtraStroke, canvas, size);
 
-    if (greyFirstTickAnimation.value > 0) {
-      _drawIntroFirstTick(getBasePaint, startColor, canvas, centerX, centerY);
-
-      if (greyFirstTickAnimation.value == 1) {
-        _drawIntroSecondTick(
-            getBasePaint, startColor, canvas, centerX, centerY);
-      }
-    }
+    _drawIntroFirstTick(getBasePaint, startColor, canvas, centerX, centerY);
+    _drawIntroSecondTick(getBasePaint, startColor, canvas, centerX, centerY);
 
     ////////////////////////////////////
 
     _drawFirstTick(getBasePaint, secondaryColor, canvas, centerX, centerY);
 
-    if (greenFirstTickAnimation.value < 1) return;
-
     _drawSecondTick(getBasePaint, secondaryColor, canvas, centerX, centerY);
 
     _drawFirstFinalTick(getBasePaint, firstColor, canvas, centerX, centerY);
-
-    if (greenFirstFinalTickAnimation.value < 1) return;
 
     _drawSecondFinalTick(getBasePaint, firstColor, canvas, centerX, centerY);
   }
 
   void _drawSecondFinalTick(Paint getBasePaint(), Color firstColor,
       Canvas canvas, double centerX, double centerY) {
-
     if (greenSecondFinalTickAnimation.value == 0) return;
 
     final greenSecondFinalTickPaint = getBasePaint()..color = firstColor;
@@ -139,7 +133,6 @@ class CustomTickPainter extends CustomPainter {
 
   void _drawSecondTick(Paint getBasePaint(), Color secondaryColor,
       Canvas canvas, double centerX, double centerY) {
-
     if (greenSecondTickAnimation.value == 0) return;
 
     final greenSecondTickPaint = getBasePaint()..color = secondaryColor;
@@ -169,7 +162,7 @@ class CustomTickPainter extends CustomPainter {
   void _drawIntroSecondTick(Paint getBasePaint(), Color startColor,
       Canvas canvas, double centerX, double centerY) {
     if (greySecondTickAnimation.value == 0) return;
-    
+
     final greySecondTickPaint = getBasePaint()..color = startColor;
 
     canvas.drawLine(
@@ -181,7 +174,6 @@ class CustomTickPainter extends CustomPainter {
 
   void _drawIntroFirstTick(Paint getBasePaint(), Color startColor,
       Canvas canvas, double centerX, double centerY) {
-
     if (greyFirstTickAnimation.value == 0) return;
 
     final greyFirstTickPaint = getBasePaint()..color = startColor;
@@ -196,9 +188,8 @@ class CustomTickPainter extends CustomPainter {
 
   void _drawSecondArc(Paint getBasePaint(), Color firstColor,
       double strokeWidth, double secondExtraStroke, Canvas canvas, Size size) {
-
     if (greenSecondArcAnimation.value == 0) return;
-    
+
     final greenSecondArcPaint = getBasePaint()
       ..color = firstColor
       ..strokeWidth = strokeWidth + secondExtraStroke;
@@ -214,7 +205,6 @@ class CustomTickPainter extends CustomPainter {
 
   void _drawFirstArc(Paint getBasePaint(), Color firstColor, Canvas canvas,
       double strokeWidth, Size size) {
-
     if (greenFirstArcAnimation.value == 0) return;
 
     final greenFirstArcPaint = getBasePaint()..color = firstColor;
@@ -230,7 +220,6 @@ class CustomTickPainter extends CustomPainter {
 
   void _drawIntroArc(Paint getBasePaint(), Color startColor, Canvas canvas,
       double strokeWidth, Size size) {
-
     if (introArcAnimation.value == 0) return;
 
     final introArcPaint = getBasePaint()..color = startColor;

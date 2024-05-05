@@ -1,5 +1,6 @@
 import 'package:custom_paint_staggered_animated_tick/widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 void main() {
   runApp(const MainApp());
@@ -26,22 +27,51 @@ class MainAppScreen extends StatefulWidget {
 class _MainAppScreenState extends State<MainAppScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController animationController;
-
+  bool repeat = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Container(
-          width: 150,
-          height: 150,
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.red),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 150,
+            height: 150,
+            // decoration: BoxDecoration(
+            //   border: Border.all(color: Colors.red),
+            // ),
+            child: CustomTick(animationController: animationController),
           ),
-          child: CustomTick(animationController: animationController),
-        ),
+          AnimatedBuilder(
+              animation: animationController,
+              builder: (context, child) {
+                return Slider(
+                    value: animationController.value,
+                    onChanged: (value) {
+                      setState(() {
+                        animationController.value = value;
+                      });
+                    });
+              }),
+          CheckboxListTile(
+              title: Text("Repeat"),
+              value: repeat,
+              onChanged: (value) => setState(() {
+                    repeat = !repeat;
+                    if (!repeat) {
+                      animationController.forward();
+                    }
+                    
+                  }))
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          if (repeat) {
+            animationController.repeat();
+            return;
+          }
           animationController.reset();
           animationController.forward();
         },
@@ -55,9 +85,9 @@ class _MainAppScreenState extends State<MainAppScreen>
     super.initState();
 
     animationController = AnimationController(
-        vsync: this, duration: Duration(milliseconds: 10600));
+        vsync: this, duration: Duration(milliseconds: 1500));
 
-    animationController.repeat();
+    //animationController.repeat();
     //animationController.value = 1;
   }
 }
