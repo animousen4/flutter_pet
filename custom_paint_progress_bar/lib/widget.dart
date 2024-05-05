@@ -5,26 +5,36 @@ import 'package:custom_paint_progress_bar/themes.dart';
 import 'package:flutter/material.dart';
 
 class CustomProgressBar extends StatelessWidget {
-  const CustomProgressBar({super.key, required this.progress});
+  CustomProgressBar({super.key, required this.progress}) {
+    assert(progress >= 0 && progress <= 1);
+  }
 
   final double progress;
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context).extension<CustomProgressBar>();
+    final theme = Theme.of(context).extension<CustomProgressTheme>() ??
+        CustomProgressTheme.defaultWith();
+    final textStyle = theme.progressTheme?.titleLarge ??
+        Theme.of(context).textTheme.titleLarge!;
 
+    final percentage = (progress * 100).toStringAsFixed(2);
     return Stack(
       fit: StackFit.expand,
       children: [
-        Center(child: Text("$progress")),
         CustomPaint(
           painter: ProgressBarPainter(
-              progress: 0.7,
+              progress: progress,
               progressPadding: 5,
               strokeWidth: 3,
-              backgroundColor: Colors.black87,
-              progressColor: Colors.blue,
-              reverseProgressColor: Colors.red),
+              theme: theme),
         ),
+        Center(
+            child: DefaultTextStyle(
+                style: textStyle,
+                child: Text(
+                  "$percentage%",
+                  style: textStyle,
+                ))),
       ],
     );
   }
@@ -64,7 +74,7 @@ class ProgressBarPainter extends CustomPainter {
     final circleRadius = size.width / 2;
 
     final paint = Paint()
-      ..color = Colors.black87
+      ..color = theme.backgroundColor
       ..style = PaintingStyle.fill;
 
     canvas.drawCircle(circleCenter, circleRadius, paint);
@@ -72,7 +82,7 @@ class ProgressBarPainter extends CustomPainter {
 
   void drawProgress(Canvas canvas, Size size, Rect arcRect) {
     final paint = Paint()
-      ..color = progressColor
+      ..color = mapProgressToColor()
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
       ..strokeWidth = strokeWidth;
@@ -81,14 +91,16 @@ class ProgressBarPainter extends CustomPainter {
 
   void drawReverseProgress(Canvas canvas, Size size, Rect arcRect) {
     final paint = Paint()
-      ..color = reverseProgressColor ?? Colors.transparent
+      ..color = theme.reverseProgressColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth;
     canvas.drawArc(arcRect, -pi / 2 + 2 * pi * progress,
         2 * pi * (1 - progress), false, paint);
   }
 
-  void eVoid(Canvas canvas, Size size) {}
+  Color mapProgressToColor() {
+    return Color.lerp(theme.lowerBoundColor, theme.upperBoundColor, progress)!;
+  }
 
   @override
   bool shouldRepaint(covariant ProgressBarPainter oldDelegate) {
