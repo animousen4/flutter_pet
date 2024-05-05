@@ -57,7 +57,7 @@ class _MainAppScreenState extends State<MainAppScreen>
     animationController = AnimationController(
         vsync: this, duration: Duration(milliseconds: 10600));
 
-    //animationController.repeat();
-    animationController.value = 1;
+    animationController.repeat();
+    //animationController.value = 1;
   }
 }
