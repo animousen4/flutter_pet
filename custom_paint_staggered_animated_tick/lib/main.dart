@@ -1,8 +1,11 @@
 import 'package:custom_paint_staggered_animated_tick/widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
 void main() {
+  debugRepaintRainbowEnabled = true;
   runApp(const MainApp());
 }
 
@@ -41,19 +44,20 @@ class _MainAppScreenState extends State<MainAppScreen>
             // decoration: BoxDecoration(
             //   border: Border.all(color: Colors.red),
             // ),
-            child: CustomTick(animationController: animationController),
+            child: RepaintBoundary(
+                child: CustomTick(animationController: animationController)),
           ),
-          AnimatedBuilder(
-              animation: animationController,
-              builder: (context, child) {
-                return Slider(
-                    value: animationController.value,
-                    onChanged: (value) {
-                      setState(() {
+          RepaintBoundary(
+            child: AnimatedBuilder(
+                animation: animationController,
+                builder: (context, child) {
+                  return Slider(
+                      value: animationController.value,
+                      onChanged: (value) {
                         animationController.value = value;
                       });
-                    });
-              }),
+                }),
+          ),
           CheckboxListTile(
               title: Text("Repeat"),
               value: repeat,
@@ -62,20 +66,21 @@ class _MainAppScreenState extends State<MainAppScreen>
                     if (!repeat) {
                       animationController.forward();
                     }
-                    
                   }))
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          if (repeat) {
-            animationController.repeat();
-            return;
-          }
-          animationController.reset();
-          animationController.forward();
-        },
-        child: Icon(Icons.play_arrow),
+      floatingActionButton: RepaintBoundary(
+        child: FloatingActionButton(
+          onPressed: () {
+            if (repeat) {
+              animationController.repeat();
+              return;
+            }
+            animationController.reset();
+            animationController.forward();
+          },
+          child: Icon(Icons.play_arrow),
+        ),
       ),
     );
   }

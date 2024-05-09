@@ -35,7 +35,7 @@ class CustomTickPainter extends CustomPainter {
   late final Animation<double> greenFirstFinalTickAnimation;
   late final Animation<double> greenSecondFinalTickAnimation;
 
-  CustomTickPainter({super.repaint, required this.animationController}) {
+  CustomTickPainter({required this.animationController}) : super(repaint: animationController) {
     introArcAnimation =
         mapInervalToAnimation(0.10, 0.95, curve: Curves.easeInOutCirc);
     greenFirstArcAnimation =
