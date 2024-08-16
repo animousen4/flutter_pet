@@ -36,7 +36,7 @@ class ActivityWidget extends StatelessWidget {
       painter: ActivityPainter(
         baseColor: Colors.red,
         periods: periods,
-        spacing: 0.02,
+        spacing: 0.06,
       ),
     );
   }
@@ -85,21 +85,18 @@ class ActivityPainter extends CustomPainter {
       final p = periods[i];
 
       if (previousPeriod.end < p.start) {
-        //if (p.start - previousPeriod.end > 2 * spacing) {
         colors
-          ..add(baseColor.withOpacity(previousPeriod.activity))
+          ..add(transparentBaseColor)
           ..add(transparentBaseColor);
-        stops
-          ..add(previousPeriod.end + spacing)
-          ..add(p.start - spacing);
-        //} else {
-        // colors
-        //   ..add(transparentBaseColor)
-        //   ..add(transparentBaseColor);
-        // stops
-        //   ..add(previousPeriod.end + spacing / 5)
-        //   ..add(p.start - spacing / 5);
-        //}
+        if (p.start - previousPeriod.end >= 2 * spacing) {
+          stops
+            ..add(previousPeriod.end + spacing)
+            ..add(p.start - spacing);
+        } else {
+          stops
+            ..add(previousPeriod.end + spacing / 3)
+            ..add(p.start - spacing / 3);
+        }
       }
 
       colors
@@ -119,7 +116,7 @@ class ActivityPainter extends CustomPainter {
     // stops.add(periods.last.end);
 
     colors.add(transparentBaseColor);
-    stops.add(periods.last.end + spacing);
+    stops.add(periods.last.end);
 
     final gradient = ui.Gradient.sweep(
       Offset(size.width / 2, size.height / 2),

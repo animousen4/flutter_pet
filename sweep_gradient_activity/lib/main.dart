@@ -18,9 +18,10 @@ class MainApp extends StatelessWidget {
               dimension: 250,
               child: ActivityWidget(
                 periods: [
-                  ActivityPeriod(activity: 1, start: 0.0, end: 0.25),
-                  ActivityPeriod(activity: 1, start: 0.30, end: 0.5),
-                  //ActivityPeriod(activity: 1, start: 0.25, end: 0.35),
+                  ActivityPeriod(activity: 0.3, start: 0, end: 0.10),
+                  ActivityPeriod(activity: 0.9, start: 0.20, end: 0.55),
+                  ActivityPeriod(activity: 0.2, start: 0.78, end: 1),
+                  //ActivityPeriod(activity: 0.1, start: 0.15, end: 1),
                   //ActivityPeriod(activity: 1, start: 0.5, end: 1),
                   //ActivityPeriod(activity: 0.2, start: 0.33, end: 0.5)
                 ],
