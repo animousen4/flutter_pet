@@ -14,15 +14,15 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         body: Center(
-          child: FrequenciesCircle(
+          child: FrequenciesWidget(
             frequencies: Frequencies(activity: [
-              0.004,
-              0.0043,
-              0.015,
-              0.019,
-              0.2,
-              0.5,
-              0.7,
+              0.01,
+              0.011,
+              0.0121,
+              0.0221,
+              0.0220,
+              0.0520,
+              0.445,
             ]),
           ),
         ),

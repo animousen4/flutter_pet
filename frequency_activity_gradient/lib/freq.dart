@@ -15,8 +15,8 @@ class Frequencies {
   });
 }
 
-class FrequenciesCircle extends StatelessWidget {
-  const FrequenciesCircle({
+class FrequenciesWidget extends StatelessWidget {
+  const FrequenciesWidget({
     super.key,
     required this.frequencies,
   });
@@ -26,8 +26,8 @@ class FrequenciesCircle extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomPaint(
       size: const Size(200, 200),
-      painter: FreqienciesCirclePainter(
-        pointSpreadFactor: 0.02,
+      painter: FrequenciesSectorPainter(
+        sectorPart: 6 / 360,
         frequencies: frequencies,
         baseColor: Colors.red,
       ),
@@ -35,6 +35,71 @@ class FrequenciesCircle extends StatelessWidget {
   }
 }
 
+class FrequenciesSectorPainter extends CustomPainter {
+  final Frequencies frequencies;
+  final double sectorPart;
+  final Color baseColor;
+  FrequenciesSectorPainter({
+    required this.frequencies,
+    required this.baseColor,
+    required this.sectorPart,
+  });
+  @override
+  void paint(Canvas canvas, Size size) {
+    final totalSectors = (1 / sectorPart).truncate();
+    final Map<int, List<double>> sectorMap = {};
+
+    /// initializing sectors
+    for (int i = 0; i < totalSectors; i++) {
+      sectorMap[i] = <double>[];
+    }
+
+    /// Filling sectors
+    for (int i = 0; i < frequencies.activity.length; i++) {
+      final value = frequencies.activity[i];
+      final sectorNumber = calculateSectorNumber(value, totalSectors);
+      sectorMap[sectorNumber]?.add(value);
+    }
+
+    /// Getting max relative amount
+    final maxValue = sectorMap.values.map((e) => e.length).reduce(max);
+
+    final List<Color> colors = [];
+    final List<double> stops = [];
+
+    for (int i = 0; i < totalSectors; i++) {
+      final sectorPoints = sectorMap[i] ?? [];
+
+      final coefficient = sectorPoints.length / maxValue;
+
+      colors.add(baseColor.withOpacity(coefficient));
+      stops.add(i * sectorPart + sectorPart / 2);
+    }
+
+    final gradient = SweepGradient(
+      colors: colors,
+      stops: stops,
+      transform: const GradientRotation(-pi / 2),
+    );
+
+    final paint = Paint()..shader = gradient.createShader(Offset.zero & size);
+
+    canvas.clipPath(Path()..addOval(const Offset(0, 0) & size));
+
+    canvas.drawPaint(paint);
+
+    
+  }
+
+  int calculateSectorNumber(double value, int total) {
+    return (total * value).truncate();
+  }
+
+  @override
+  bool shouldRepaint(covariant FrequenciesSectorPainter oldDelegate) => false;
+}
+
+//////
 class FreqienciesCirclePainter extends CustomPainter {
   final Frequencies frequencies;
   final double pointSpreadFactor;
@@ -105,10 +170,10 @@ class FreqienciesCirclePainter extends CustomPainter {
     }
 
     final gradientShader = ui.Gradient.sweep(
-      Offset(size.width / 2, size.height / 2),
-      gradientColors,
-      stops,
-    );
+        Offset(size.width / 2, size.height / 2),
+        gradientColors,
+        stops,
+        TileMode.decal);
 
     final paint = Paint()..shader = gradientShader;
 
