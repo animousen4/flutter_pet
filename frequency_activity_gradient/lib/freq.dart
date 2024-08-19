@@ -27,8 +27,8 @@ class FrequenciesWidget extends StatelessWidget {
     return CustomPaint(
       size: const Size(200, 200),
       painter: FrequenciesSectorPainter(
-        sectorPart: 6 / 360,
-        frequencies: frequencies,
+        sectorPart: 10 / 360,
+        activity: frequencies.activity,
         baseColor: Colors.red,
       ),
     );
@@ -36,11 +36,11 @@ class FrequenciesWidget extends StatelessWidget {
 }
 
 class FrequenciesSectorPainter extends CustomPainter {
-  final Frequencies frequencies;
+  final List<double> activity;
   final double sectorPart;
   final Color baseColor;
   FrequenciesSectorPainter({
-    required this.frequencies,
+    required this.activity,
     required this.baseColor,
     required this.sectorPart,
   });
@@ -55,14 +55,14 @@ class FrequenciesSectorPainter extends CustomPainter {
     }
 
     /// Filling sectors
-    for (int i = 0; i < frequencies.activity.length; i++) {
-      final value = frequencies.activity[i];
+    for (int i = 0; i < activity.length; i++) {
+      final value = activity[i];
       final sectorNumber = calculateSectorNumber(value, totalSectors);
       sectorMap[sectorNumber]?.add(value);
     }
 
     /// Getting max relative amount
-    final maxValue = sectorMap.values.map((e) => e.length).reduce(max);
+    final maxSectorLength = sectorMap.values.map((e) => e.length).reduce(max);
 
     final List<Color> colors = [];
     final List<double> stops = [];
@@ -70,7 +70,7 @@ class FrequenciesSectorPainter extends CustomPainter {
     for (int i = 0; i < totalSectors; i++) {
       final sectorPoints = sectorMap[i] ?? [];
 
-      final coefficient = sectorPoints.length / maxValue;
+      final coefficient = sectorPoints.length / maxSectorLength;
 
       colors.add(baseColor.withOpacity(coefficient));
       stops.add(i * sectorPart + sectorPart / 2);
@@ -87,8 +87,6 @@ class FrequenciesSectorPainter extends CustomPainter {
     canvas.clipPath(Path()..addOval(const Offset(0, 0) & size));
 
     canvas.drawPaint(paint);
-
-    
   }
 
   int calculateSectorNumber(double value, int total) {
