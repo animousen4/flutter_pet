@@ -79,18 +79,21 @@ class _ScreenTwo extends StatelessWidget {
               showDialog(
                   context: context,
                   useRootNavigator: false,
-                  builder: (context) => AlertDialog(
-                        title: const Text("Alert"),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              final navigator = Navigator.of(context);
+                  builder: (context) => WillPopScope(
+                        onWillPop: () async => true,
+                        child: AlertDialog(
+                          title: const Text("Alert"),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                final navigator = Navigator.of(context);
 
-                              navigator.maybePop();
-                            },
-                            child: const Text("POP"),
-                          )
-                        ],
+                                navigator.maybePop();
+                              },
+                              child: const Text("POP"),
+                            )
+                          ],
+                        ),
                       ));
             },
             child: const Text("Show dialog")),
