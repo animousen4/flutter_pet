@@ -5,14 +5,32 @@ void main() {
   runApp(const MainApp());
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends StatefulWidget {
   const MainApp({super.key});
 
   @override
+  State<MainApp> createState() => _MainAppState();
+}
+
+class _MainAppState extends State<MainApp> {
+  late final PageNavigatorController appNavigatorController = ValueNotifier(
+      [const MaterialPage(key: ValueKey("screen_one"), child: _ScreenOne())]);
+
+  @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: AppNavigator(
-        home: MaterialPage(key: ValueKey("screen_one"), child: _ScreenOne()),
+    return MaterialApp(
+      home: WillPopScope(
+        onWillPop: () async {
+          appNavigatorController.value = appNavigatorController.value
+              .getRange(0, appNavigatorController.value.length - 1)
+              .toList();
+          return false;
+        },
+        child: AppNavigator(
+          pageController: appNavigatorController,
+          home: const MaterialPage(
+              key: ValueKey("screen_one"), child: _ScreenOne()),
+        ),
       ),
     );
   }
@@ -43,18 +61,15 @@ class _ScreenOne extends StatelessWidget {
 }
 
 class _ScreenTwo extends StatelessWidget {
-  const _ScreenTwo({super.key});
+  const _ScreenTwo({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        return false;
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text("Screen SECOND!!!!!!!"),
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Screen SECOND!!!!!!!"),
       ),
     );
   }

@@ -3,7 +3,7 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 
 typedef PageList = List<Page<Object?>>;
-typedef PageController = ValueNotifier<PageList>;
+typedef PageNavigatorController = ValueNotifier<PageList>;
 
 abstract class AppNavigatorController {
   void change(PageList Function(PageList pages) pages);
@@ -12,7 +12,7 @@ abstract class AppNavigatorController {
 class AppNavigator extends StatefulWidget {
   const AppNavigator({super.key, required this.home, this.pageController});
 
-  final PageController? pageController;
+  final PageNavigatorController? pageController;
 
   final Page<Object?> home;
 
@@ -25,7 +25,7 @@ class AppNavigator extends StatefulWidget {
 
 class _AppNavigatorState extends State<AppNavigator>
     implements AppNavigatorController {
-  late PageController pageController;
+  late PageNavigatorController pageController;
   late HeroController heroController;
   @override
   Widget build(BuildContext context) {
@@ -61,7 +61,7 @@ class _AppNavigatorState extends State<AppNavigator>
   void initState() {
     super.initState();
 
-    pageController = widget.pageController ?? PageController([widget.home]);
+    pageController = widget.pageController ?? PageNavigatorController([widget.home]);
     heroController = HeroController();
 
     pageController.addListener(_onPagesChanged);
@@ -73,7 +73,7 @@ class _AppNavigatorState extends State<AppNavigator>
 
     if (!identical(widget.pageController, pageController)) {
       pageController.removeListener(_onPagesChanged);
-      pageController = widget.pageController ?? PageController([widget.home]);
+      pageController = widget.pageController ?? PageNavigatorController([widget.home]);
 
       // in case the controller provided upper doesn't contain any route
       if (pageController.value.isEmpty) {
