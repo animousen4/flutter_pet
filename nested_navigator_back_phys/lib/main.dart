@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nested_navigator_back_phys/app_navigator.dart';
+import 'package:nested_navigator_back_phys/app_router.dart';
 
 void main() {
   runApp(const MainApp());
@@ -13,23 +14,36 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
-  late final PageNavigatorController appNavigatorController = ValueNotifier(
-      [const MaterialPage(key: ValueKey("screen_one"), child: _ScreenOne())]);
+  late final PageNavigatorValueNotifier pageController = ValueNotifier([
+    const MaterialPage(
+      key: ValueKey("screen_one"),
+      child: _ScreenOne(),
+    ),
+  ]);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: WillPopScope(
-        onWillPop: () async {
-          appNavigatorController.value = appNavigatorController.value
-              .getRange(0, appNavigatorController.value.length - 1)
-              .toList();
-          return false;
-        },
-        child: AppNavigator(
-          pageController: appNavigatorController,
-          home: const MaterialPage(
-              key: ValueKey("screen_one"), child: _ScreenOne()),
+      home: AppRouter(
+        home: MaterialPage(
+          key: const ValueKey("app_root_nav"),
+          child: WillPopScope(
+            onWillPop: () async {
+              if (pageController.value.length <= 1) {
+                return true;
+              }
+              pageController.value = pageController.value
+                  .getRange(0, pageController.value.length - 1)
+                  .toList();
+              return false;
+            },
+            child: const AppRouter(
+              home: MaterialPage(
+                key: ValueKey("screen_one"),
+                child: _ScreenOne(),
+              ),
+            ),
+          ),
         ),
       ),
     );
