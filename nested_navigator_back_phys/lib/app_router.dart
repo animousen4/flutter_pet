@@ -113,15 +113,29 @@ class _AppRouterDelegate extends RouterDelegate<String> with ChangeNotifier {
 
   @override
   Widget build(BuildContext context) {
-    return AppNavigator(
-      home: home,
-      appNavigatorController: appNavigatorController,
-    );
+    return ValueListenableBuilder(
+        valueListenable: appNavigatorController,
+        builder: (context, value, child) {
+          return Navigator(
+            pages: value,
+            onPopPage: _onPopPage,
+          );
+        });
+  }
+
+  bool _onPopPage(Route<Object?> route, Object? result) {
+    if (!route.didPop(result)) return false;
+    final pages = appNavigatorController.value;
+    if (pages.length <= 1) return false;
+    // You can implement custom logic here
+    appNavigatorController.value =
+        UnmodifiableListView<Page<Object?>>(pages.sublist(0, pages.length - 1));
+    return true;
   }
 
   @override
   Future<bool> popRoute() {
-    final popped= appNavigatorController
+    final popped = appNavigatorController
         .change((pages) => pages.getRange(0, pages.length - 1).toList());
     return SynchronousFuture(popped);
   }

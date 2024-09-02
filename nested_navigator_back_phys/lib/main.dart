@@ -14,8 +14,6 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
-
-
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
@@ -73,6 +71,25 @@ class _ScreenTwo extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Screen SECOND!!!!!!!"),
+      ),
+      body: Center(
+        child: ElevatedButton(
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                        title: const Text("Alert"),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text("POP"),
+                          )
+                        ],
+                      ));
+            },
+            child: const Text("Show dialog")),
       ),
     );
   }
