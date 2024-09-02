@@ -14,34 +14,18 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
-  late final PageNavigatorValueNotifier pageController = ValueNotifier([
-    const MaterialPage(
-      key: ValueKey("screen_one"),
-      child: _ScreenOne(),
-    ),
-  ]);
+
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: AppRouter(
         home: MaterialPage(
-          key: const ValueKey("app_root_nav"),
-          child: WillPopScope(
-            onWillPop: () async {
-              if (pageController.value.length <= 1) {
-                return true;
-              }
-              pageController.value = pageController.value
-                  .getRange(0, pageController.value.length - 1)
-                  .toList();
-              return false;
-            },
-            child: const AppRouter(
-              home: MaterialPage(
-                key: ValueKey("screen_one"),
-                child: _ScreenOne(),
-              ),
+          key: ValueKey("app_root_nav"),
+          child: AppRouter(
+            home: MaterialPage(
+              key: ValueKey("screen_one"),
+              child: _ScreenOne(),
             ),
           ),
         ),
@@ -61,14 +45,19 @@ class _ScreenOne extends StatelessWidget {
       ),
       body: Center(
         child: ElevatedButton(
-            onPressed: () {
-              AppNavigator.of(context).change((pages) => [
-                    ...pages,
-                    const MaterialPage(
-                        key: ValueKey("screen_two"), child: _ScreenTwo())
-                  ]);
-            },
-            child: const Text("Second screen")),
+          onPressed: () {
+            AppRouter.of(context).change(
+              (pages) => [
+                ...pages,
+                const MaterialPage(
+                  key: ValueKey("screen_two"),
+                  child: _ScreenTwo(),
+                )
+              ],
+            );
+          },
+          child: const Text("Second screen"),
+        ),
       ),
     );
   }

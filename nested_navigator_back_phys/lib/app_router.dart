@@ -1,10 +1,55 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:collection';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 
 import 'package:nested_navigator_back_phys/app_navigator.dart';
+
+class AppNavigatorController extends PageNavigatorValueNotifier {
+  bool change(PageList Function(PageList pages) pagesFunction) {
+    final pages = pagesFunction(value);
+
+    if (identical(value, pages)) {
+      return false;
+    }
+
+    final set = <LocalKey>{};
+    final newPages = <Page<Object?>>[];
+    for (var i = pages.length - 1; i >= 0; i--) {
+      final page = pages[i];
+      final key = page.key;
+      if (set.contains(page.key) || key == null) continue;
+      set.add(key);
+      newPages.insert(0, page);
+    }
+    if (newPages.isNotEmpty) {
+      value = UnmodifiableListView<Page<Object?>>(newPages);
+
+      return true;
+    }
+
+    return false;
+  }
+
+  AppNavigatorController({required PageList initialPages})
+      : super(initialPages);
+}
+
+class _InheritAppRouter extends InheritedWidget {
+  const _InheritAppRouter({
+    required this.navigatorController,
+    required super.child,
+  });
+
+  final AppNavigatorController navigatorController;
+
+  @override
+  bool updateShouldNotify(covariant _InheritAppRouter oldWidget) =>
+      !identical(navigatorController, oldWidget.navigatorController);
+}
 
 class AppRouter extends StatefulWidget {
   const AppRouter({
@@ -13,6 +58,11 @@ class AppRouter extends StatefulWidget {
   });
 
   final Page<Object?> home;
+
+  static AppNavigatorController of(BuildContext context) => context
+      .dependOnInheritedWidgetOfExactType<_InheritAppRouter>()!
+      .navigatorController;
+
   @override
   State<AppRouter> createState() => _AppRouterState();
 }
@@ -27,10 +77,13 @@ class _AppRouterState extends State<AppRouter> {
     final toUseButtonDispatcher = parentButtonDispatcher != null
         ? (ChildBackButtonDispatcher(parentButtonDispatcher)..takePriority())
         : RootBackButtonDispatcher();
-    return Router(
-      routerDelegate: _AppRouterDelegate(
-          home: widget.home, appNavigatorController: appNavigatorController),
-      backButtonDispatcher: toUseButtonDispatcher,
+    return _InheritAppRouter(
+      navigatorController: appNavigatorController,
+      child: Router(
+        routerDelegate: _AppRouterDelegate(
+            home: widget.home, appNavigatorController: appNavigatorController),
+        backButtonDispatcher: toUseButtonDispatcher,
+      ),
     );
   }
 
@@ -60,13 +113,17 @@ class _AppRouterDelegate extends RouterDelegate<String> with ChangeNotifier {
 
   @override
   Widget build(BuildContext context) {
-    return AppNavigator(home: home);
+    return AppNavigator(
+      home: home,
+      appNavigatorController: appNavigatorController,
+    );
   }
 
   @override
   Future<bool> popRoute() {
-
-    return SynchronousFuture(true);
+    final popped= appNavigatorController
+        .change((pages) => pages.getRange(0, pages.length - 1).toList());
+    return SynchronousFuture(popped);
   }
 
   @override

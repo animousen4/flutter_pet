@@ -1,39 +1,10 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:nested_navigator_back_phys/app_router.dart';
 
 typedef PageList = List<Page<Object?>>;
 typedef PageNavigatorValueNotifier = ValueNotifier<PageList>;
-
-class AppNavigatorController extends PageNavigatorValueNotifier {
-  bool change(PageList Function(PageList pages) pagesFunction) {
-    final pages = pagesFunction(value);
-
-    if (identical(value, pages)) {
-      return false;
-    }
-
-    final set = <LocalKey>{};
-    final newPages = <Page<Object?>>[];
-    for (var i = pages.length - 1; i >= 0; i--) {
-      final page = pages[i];
-      final key = page.key;
-      if (set.contains(page.key) || key == null) continue;
-      set.add(key);
-      newPages.insert(0, page);
-    }
-    if (newPages.isNotEmpty) {
-      value = UnmodifiableListView<Page<Object?>>(newPages);
-
-      return true;
-    }
-
-    return false;
-  }
-
-  AppNavigatorController({required PageList initialPages})
-      : super(initialPages);
-}
 
 class AppNavigator extends StatefulWidget {
   const AppNavigator(
@@ -42,10 +13,6 @@ class AppNavigator extends StatefulWidget {
   final AppNavigatorController? appNavigatorController;
 
   final Page<Object?> home;
-
-  static AppNavigatorController of(BuildContext context) => context
-      .dependOnInheritedWidgetOfExactType<_InheritAppRouter>()!
-      .navigatorController;
 
   @override
   State<AppNavigator> createState() => _AppNavigatorState();
@@ -56,17 +23,12 @@ class _AppNavigatorState extends State<AppNavigator> {
   late HeroController heroController;
   @override
   Widget build(BuildContext context) {
-    return _InheritAppRouter(
-      navigatorController: appNavigatorController,
-
-      child: Navigator(
-        observers: [
-          heroController,
-        ],
-        pages: appNavigatorController.value,
-        onPopPage: _onPopPage,
-      ),
-      //),
+    return Navigator(
+      observers: [
+        heroController,
+      ],
+      pages: appNavigatorController.value,
+      onPopPage: _onPopPage,
     );
   }
 
@@ -140,17 +102,4 @@ class _AppNavigatorState extends State<AppNavigator> {
 
   //   return true;
   // }
-}
-
-class _InheritAppRouter extends InheritedWidget {
-  const _InheritAppRouter({
-    required this.navigatorController,
-    required super.child,
-  });
-
-  final AppNavigatorController navigatorController;
-
-  @override
-  bool updateShouldNotify(covariant _InheritAppRouter oldWidget) =>
-      !identical(navigatorController, oldWidget.navigatorController);
 }
