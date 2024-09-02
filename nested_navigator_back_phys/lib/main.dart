@@ -70,6 +70,7 @@ class _ScreenTwo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: const BackButton(),
         title: const Text("Screen SECOND!!!!!!!"),
       ),
       body: Center(
@@ -77,12 +78,15 @@ class _ScreenTwo extends StatelessWidget {
             onPressed: () {
               showDialog(
                   context: context,
+                  useRootNavigator: false,
                   builder: (context) => AlertDialog(
                         title: const Text("Alert"),
                         actions: [
                           TextButton(
                             onPressed: () {
-                              Navigator.of(context).pop();
+                              final navigator = Navigator.of(context);
+
+                              navigator.maybePop();
                             },
                             child: const Text("POP"),
                           )
