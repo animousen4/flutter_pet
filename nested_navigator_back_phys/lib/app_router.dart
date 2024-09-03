@@ -3,10 +3,9 @@ import 'dart:collection';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 
-import 'package:nested_navigator_back_phys/app_navigator.dart';
+typedef PageList = List<Page<Object?>>;
+typedef PageNavigatorValueNotifier = ValueNotifier<PageList>;
 
 class AppNavigatorController extends PageNavigatorValueNotifier {
   bool change(PageList Function(PageList pages) pagesFunction) {
@@ -15,7 +14,6 @@ class AppNavigatorController extends PageNavigatorValueNotifier {
     if (identical(value, pages)) {
       return false;
     }
-
     final set = <LocalKey>{};
     final newPages = <Page<Object?>>[];
     for (var i = pages.length - 1; i >= 0; i--) {
@@ -69,6 +67,8 @@ class AppRouter extends StatefulWidget {
 
 class _AppRouterState extends State<AppRouter> {
   late final AppNavigatorController appNavigatorController;
+  late final HeroController heroController;
+
   @override
   Widget build(BuildContext context) {
     final parentButtonDispatcher =
@@ -81,7 +81,10 @@ class _AppRouterState extends State<AppRouter> {
       navigatorController: appNavigatorController,
       child: Router(
         routerDelegate: _AppRouterDelegate(
-            home: widget.home, appNavigatorController: appNavigatorController),
+          home: widget.home,
+          appNavigatorController: appNavigatorController,
+          heroController: heroController,
+        ),
         backButtonDispatcher: toUseButtonDispatcher,
       ),
     );
@@ -93,6 +96,8 @@ class _AppRouterState extends State<AppRouter> {
 
     appNavigatorController =
         AppNavigatorController(initialPages: [widget.home]);
+
+    heroController = HeroController();
   }
 
   @override
@@ -104,10 +109,11 @@ class _AppRouterState extends State<AppRouter> {
 
 class _AppRouterDelegate extends RouterDelegate<String> with ChangeNotifier {
   final AppNavigatorController appNavigatorController;
-
+  final HeroController heroController;
   final Page<Object?> home;
   _AppRouterDelegate({
     required this.appNavigatorController,
+    required this.heroController,
     required this.home,
   });
 
@@ -119,6 +125,7 @@ class _AppRouterDelegate extends RouterDelegate<String> with ChangeNotifier {
           return Navigator(
             pages: value,
             onPopPage: _onPopPage,
+            observers: [heroController],
           );
         });
   }
@@ -135,6 +142,7 @@ class _AppRouterDelegate extends RouterDelegate<String> with ChangeNotifier {
 
   @override
   Future<bool> popRoute() {
+    
     final popped = appNavigatorController
         .change((pages) => pages.getRange(0, pages.length - 1).toList());
     return SynchronousFuture(popped);

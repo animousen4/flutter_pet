@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:nested_navigator_back_phys/app_navigator.dart';
 import 'package:nested_navigator_back_phys/app_router.dart';
 
 void main() {
@@ -79,21 +78,19 @@ class _ScreenTwo extends StatelessWidget {
               showDialog(
                   context: context,
                   useRootNavigator: false,
-                  builder: (context) => WillPopScope(
-                        onWillPop: () async => true,
-                        child: AlertDialog(
-                          title: const Text("Alert"),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                final navigator = Navigator.of(context);
+                  barrierDismissible: false,
+                  builder: (context) => AlertDialog(
+                        title: const Text("Alert"),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              final navigator = Navigator.of(context);
 
-                                navigator.maybePop();
-                              },
-                              child: const Text("POP"),
-                            )
-                          ],
-                        ),
+                              navigator.pop();
+                            },
+                            child: const Text("POP"),
+                          )
+                        ],
                       ));
             },
             child: const Text("Show dialog")),
